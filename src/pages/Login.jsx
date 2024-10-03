@@ -1,17 +1,12 @@
-
-
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
   const usernameRef = useRef();
   const passwordRef = useRef();
-  const navigatee = useNavigate();
-
-
+  const navigate = useNavigate();
 
   function validate() {
-    
     if (usernameRef.current.value.trim().length < 3) {
       alert("Username kamida 3 ta belgidan iborat bo'lishi kerak");
       usernameRef.current.focus();
@@ -29,7 +24,7 @@ function Login() {
       passwordRef.current.style.outline = "";
     }
 
-    return true; 
+    return true;
   }
 
   function handleLogin(event) {
@@ -42,7 +37,7 @@ function Login() {
 
     const user = {
       username: usernameRef.current.value.trim(),
-     
+
       password: passwordRef.current.value.trim(),
     };
 
@@ -51,21 +46,27 @@ function Login() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(user),
+      body: JSON.stringify(user),               
     })
       .then((res) => {
         if (!res.ok) {
           throw new Error(` ${res.status}`);
-          
         }
         return res.json();
       })
       .then((data) => {
-        navigatee("/home")
+        if(data.message==="User Not found." || data.message=== "Invalid Password!"){
+          alert(data.message)
+        }
+        if(data.id){
+localStorage.setItem('token', data.accessToken);
+localStorage.setItem('user', JSON.stringify(data)) 
+navigate('/home')
+        }
       })
       .catch((err) => {
-        console.error(err);
-        alert("Mavjud bolgan email yoki username kiritildi ");
+        console.log(err);
+        alert(`${err.message}`);
       });
   }
 
@@ -78,7 +79,7 @@ function Login() {
           type="text"
           placeholder="Enter username"
         />
-       
+
         <input
           className="border rounded-md p-3"
           ref={passwordRef}

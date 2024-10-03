@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   const usernameRef = useRef();
@@ -69,7 +69,7 @@ function Register() {
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error(`Server error: ${res.status}`);
+          console.log(`Server error: ${res.status}`);
         }
         return res.json();
       })
@@ -120,6 +120,7 @@ function Register() {
         >
           Register
         </button>
+        <Link to="/login">loginga otish</Link>
       </form>
     </div>
   );
